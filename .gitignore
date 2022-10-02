@@ -7,6 +7,11 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# remove pycache
+*.pyc
+*~
+*.swp
+
 # C extensions
 *.so
 
