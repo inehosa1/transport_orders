@@ -4,10 +4,12 @@ from django.db.models import Q
 from rest_framework import serializers
 from transport.models import DriverAvailableModel, OrderModel
 
+
 class DriverAvailableSerializer(serializers.ModelSerializer):
     """
     Serializador para la asignación de pedidos a los conductores
     """
+    schedule = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S")
     
     def validate_schedule(self, schedule):
         """
@@ -16,13 +18,7 @@ class DriverAvailableSerializer(serializers.ModelSerializer):
         schedule_errors = []
         
         if schedule.minute != 0:
-            schedule_errors.append("La fecha de entrega no debe contener minutos")
-            
-        if schedule.second != 0:
-            schedule_errors.append("La fecha de entrega no debe contener segundos")
-        
-        if schedule.microsecond != 0:
-            schedule_errors.append("La fecha de entrega no debe contener micro segundos")
+            schedule_errors.append("la fecha de entrega debe ser en horas exactas")
 
         if schedule_errors:
             raise serializers.ValidationError(", ".join(schedule_errors))
@@ -122,7 +118,7 @@ class OrderSerializer(serializers.ModelSerializer):
         )
         
         validated_data.pop('driver_available')
-        instance = OrderModel.objects.create(**validated_data, transport=instance_driver_available)
+        instance = OrderModel.objects.create(**validated_data, driver_available=instance_driver_available)
         return instance
 
     class Meta:

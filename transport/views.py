@@ -3,7 +3,7 @@ from django_filters import rest_framework as filters
 from transport.models import OrderModel
 from transport.serializer import OrderSerializer
 from rest_framework import viewsets
-    
+from drf_yasg.utils import swagger_auto_schema
     
 class OrderViewSet(viewsets.ModelViewSet):
     """
@@ -19,3 +19,4 @@ class OrderViewSet(viewsets.ModelViewSet):
         'driver_available__driver': ["exact"],
         "driver_available__schedule": ["hour__exact"]
     }
+    

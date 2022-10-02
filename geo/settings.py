@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-b^_l3lvsdzm_g$0e0!+)^o7kal)*vwg_ruv4yu!*(y(i44-ul%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -114,11 +114,14 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'es-ES'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Bogota'
 
 USE_I18N = True
 
-USE_TZ = True
+USE_L10N = False
+
+#Poner en True si se desea almacenar las fechas en America/Chicago
+USE_TZ = False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
@@ -136,7 +139,9 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
     ),
-    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+    "DATE_INPUT_FORMATS": ["%d-%m-%Y"],
+    "DATETIME_INPUT_FORMATS": ['%Y-%m-%d %H:%M']
 }
 
 INTERNAL_IPS = [

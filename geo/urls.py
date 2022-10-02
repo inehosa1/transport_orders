@@ -27,6 +27,7 @@ schema_view = get_schema_view(
         * Se podra realizar la gestión de pedidos por medio de latitud y longitud de recogida/entrega
         * Se asignara el conductor mas cercano disponible en la franja horaria disponible
         """,
+        FORMAT_DATETIME= 'date-time'
    ),
    public=True,
    permission_classes=[permissions.AllowAny],
