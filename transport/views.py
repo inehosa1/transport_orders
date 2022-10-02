@@ -11,7 +11,8 @@ class OrderViewSet(viewsets.ModelViewSet):
     """
     serializer_class = OrderSerializer
     queryset = OrderModel.objects.all()
-    ordering_fields = ['driver_available__driver', 'driver_available__schedule']
+    http_method_names = ['get', 'post', 'head', "delete"]
+    ordering_fields = ['driver_available__driver', 'driver_available__schedule']    
     ordering = "driver_available__schedule__hour"
     filter_backends = (filters.DjangoFilterBackend, OrderingFilter)
     filterset_fields = {

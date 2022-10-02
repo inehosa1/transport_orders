@@ -18,6 +18,12 @@ class DriverAvailableSerializer(serializers.ModelSerializer):
         if schedule.minute != 0:
             schedule_errors.append("La fecha de entrega no debe contener minutos")
             
+        if schedule.second != 0:
+            schedule_errors.append("La fecha de entrega no debe contener segundos")
+        
+        if schedule.microsecond != 0:
+            schedule_errors.append("La fecha de entrega no debe contener micro segundos")
+
         if schedule_errors:
             raise serializers.ValidationError(", ".join(schedule_errors))
         return schedule
