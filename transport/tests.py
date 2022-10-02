@@ -16,7 +16,7 @@ class AccountTests(APITestCase):
             "pickup_longitude": 100
         }
         
-    def test_date_format(self):
+    def test_create_date_format_incorrect(self):
         """
         Test para probar si el formato de fecha es valido
         """
@@ -30,7 +30,7 @@ class AccountTests(APITestCase):
             'Fecha/Hora Con Formato Erróneo. Use Uno De Los Siguientes Formatos En Su Lugar: Yyyy-Mm-Dd Hh:Mm.'
         )
         
-    def test_creating_order_with_minutes(self):
+    def test_create_order_with_minutes(self):
         """
         Test para probar si la fecha contiene minutos
         """
@@ -44,7 +44,7 @@ class AccountTests(APITestCase):
             'La Fecha De Entrega Debe Ser En Horas Exactas'
         )
         
-    def test_creating_order_correct(self):
+    def test_create_order_correct(self):
         """
         Test para probar la creación de la orden con un formato correcto
         """
@@ -55,7 +55,7 @@ class AccountTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(OrderModel.objects.count(), 1)
     
-    def test_creating_with_empty_data(self):
+    def test_create_with_empty_data(self):
         """
         Test para probar la creación de la orden con un json vacio
         """
@@ -65,9 +65,8 @@ class AccountTests(APITestCase):
         self.assertEqual(response.data['driver_available'][0].title(), 'Este Campo Es Requerido.')
         self.assertEqual(response.data['pickup_latitude'][0].title(), 'Este Campo Es Requerido.')
         self.assertEqual(response.data['pickup_longitude'][0].title(), 'Este Campo Es Requerido.')
-
-            
-    def test_creating_latitud_and_longitude_out_of_range(self):
+         
+    def test_create_latitud_and_longitude_out_of_range(self):
         """
         Test para probar con latitud y longitud fuera de rango
         """
@@ -93,4 +92,5 @@ class AccountTests(APITestCase):
         self.assertEqual(response.data["pickup_longitude"][0].title(), 'Asegúrese De Que Este Valor Es Mayor O Igual A 0.')
         self.assertEqual(response.data["pickup_longitude"][0].code, 'min_value')
     
-    
+    def test_get_driver(self):
+        

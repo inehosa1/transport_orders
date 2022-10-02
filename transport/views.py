@@ -2,32 +2,40 @@ from math import dist
 from datetime import datetime
 
 from django_filters import rest_framework as filters
+from django_filters.rest_framework import DjangoFilterBackend, FilterSet
 
 from transport.models import OrderModel
 from transport.serializer import OrderSerializer, NearestDriverSerializer
 
-from rest_framework.filters import OrderingFilter
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
+
+class OrderFilter(filters.FilterSet):
+    driver_available__schedule = filters.DateFromToRangeFilter(field_name='driver_available__schedule')
+
+    class Meta:
+        model = OrderModel
+        fields = ['driver_available__schedule', "driver_available__driver"]
+
+class FindNearestDriverFilter(filters.FilterSet):
+    
+    class Meta:
+        model = OrderModel
+        fields = ['driver_available__schedule', "driver_available__delivery_latitude", "driver_available__delivery_longitude"]
+
 
 class OrderViewSet(viewsets.ModelViewSet):
     """
     Vista para la creación de pedidos
     """
     serializer_class = OrderSerializer
-    queryset = OrderModel.objects.select_related("driver_available").all()
+    queryset = OrderModel.objects.select_related("driver_available").all().order_by('driver_available__schedule', 'driver_available__schedule__hour')
     http_method_names = ['get', 'post', 'head', "delete"]
-    ordering_fields = ['driver_available__driver', 'driver_available__schedule']    
-    ordering = "driver_available__schedule__hour"
-    filter_backends = (filters.DjangoFilterBackend, OrderingFilter)
-    filterset_fields = {
-        'driver_available__driver': ["exact"],
-        "driver_available__schedule": ["hour__exact"]
-    }    
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = OrderFilter
 
     def search_greater_or_less_record(self, request, major_or_minor, symbol=""):
         """
@@ -37,6 +45,7 @@ class OrderViewSet(viewsets.ModelViewSet):
         
         filter_data = {
             f"driver_available__schedule__{major_or_minor}": convert_date_schedule,
+            f"driver_available__schedule__day": convert_date_schedule.day,
             f"driver_available__delivery_latitude__{major_or_minor}": request.GET.get("driver_available__delivery_latitude"),
             f"driver_available__delivery_longitude__{major_or_minor}": request.GET.get("driver_available__delivery_longitude")
         }
@@ -52,14 +61,10 @@ class OrderViewSet(viewsets.ModelViewSet):
         )
 
     @swagger_auto_schema(operation_description="Busqueda del conductor mas cercano acorde a las cordenadas ingresadas")
-    @action(detail=False, methods=['get'], filterset_fields = {
-        "driver_available__schedule": ["exact"],
-        'driver_available__delivery_latitude': ["exact"],
-        'driver_available__delivery_longitude': ["exact"]
-    })
+    @action(detail=False, methods=['get'], filterset_class = FindNearestDriverFilter)
     def find_nearest_driver(self, request):
         """
-        Busqueda del conductor mas cercano acorde a las cordenadas ingresadas
+        Busqueda del conductor mas cercano acorde a las cordenadas ingresadas en una fecha y hora
         """        
         serializer_neares_driver = NearestDriverSerializer(data=request.GET)
         

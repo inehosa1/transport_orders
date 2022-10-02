@@ -118,10 +118,9 @@ TIME_ZONE = 'America/Bogota'
 
 USE_I18N = True
 
-USE_L10N = False
+USE_L10N = True
 
-#Poner en True si se desea almacenar las fechas en America/Chicago
-USE_TZ = False
+USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
