@@ -126,3 +126,7 @@ class OrderSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class NearestDriverSerializer(serializers.Serializer):
+    driver_available__schedule = serializers.DateTimeField()
+    driver_available__delivery_latitude = serializers.IntegerField(min_value=0, max_value=100)
+    driver_available__delivery_longitude = serializers.IntegerField(min_value=0, max_value=100)
