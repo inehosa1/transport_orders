@@ -25,8 +25,10 @@ schema_view = get_schema_view(
         title="Rest app para la gestión de pedidos",
         default_version='v1',
         description="""
-        * Se podra realizar la gestión de pedidos por medio de latitud y longitud de recogida/entrega
-        * Se asignara el conductor mas cercano disponible en la franja horaria disponible
+        * Agendar un pedido a un conductor en una fecha y hora, y especificar su lugar de recogida (latitud y longitud) y destino. 
+        * Consultar todos los pedidos asignados en un día en específico ordenados por la hora. 
+        * Consultar todos los pedidos de un conductor en un día en específico ordenados por la hora. 
+        * Hacer búsquedas del conductor que esté más cerca de un punto geográfico en una fecha y hora. (Tener en consideración los pedidos ya asignados al conductor).         
         """,
         contact=openapi.Contact(email="chanix1998@gmail.com"),
 
