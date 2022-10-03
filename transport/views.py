@@ -14,17 +14,17 @@ from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
 
 class OrderFilter(filters.FilterSet):
-    driver_available__schedule = filters.DateFromToRangeFilter(field_name='driver_available__schedule')
+    driver_available__schedule = filters.DateFilter(field_name="driver_available__schedule", lookup_expr='contains')
 
     class Meta:
         model = OrderModel
-        fields = ['driver_available__schedule', "driver_available__driver"]
+        fields = ["driver_available__schedule", "driver_available__driver"]
 
 class FindNearestDriverFilter(filters.FilterSet):
     
     class Meta:
         model = OrderModel
-        fields = ['driver_available__schedule', "driver_available__delivery_latitude", "driver_available__delivery_longitude"]
+        fields = ["driver_available__schedule", "driver_available__delivery_latitude", "driver_available__delivery_longitude"]
 
 
 class OrderViewSet(viewsets.ModelViewSet):
@@ -32,8 +32,8 @@ class OrderViewSet(viewsets.ModelViewSet):
     Vista para la creación de pedidos
     """
     serializer_class = OrderSerializer
-    queryset = OrderModel.objects.select_related("driver_available").all().order_by('driver_available__schedule', 'driver_available__schedule__hour')
-    http_method_names = ['get', 'post', 'head', "delete"]
+    queryset = OrderModel.objects.select_related("driver_available").all().order_by("driver_available__schedule", "driver_available__schedule__hour")
+    http_method_names = ["get", "post", "head", "delete"]
     filter_backends = [DjangoFilterBackend]
     filterset_class = OrderFilter
 
@@ -61,7 +61,7 @@ class OrderViewSet(viewsets.ModelViewSet):
         )
 
     @swagger_auto_schema(operation_description="Busqueda del conductor mas cercano acorde a las cordenadas ingresadas")
-    @action(detail=False, methods=['get'], filterset_class = FindNearestDriverFilter)
+    @action(detail=False, methods=["get"], filterset_class = FindNearestDriverFilter, url_name="find_nearest_driver")
     def find_nearest_driver(self, request):
         """
         Busqueda del conductor mas cercano acorde a las cordenadas ingresadas en una fecha y hora
@@ -90,17 +90,22 @@ class OrderViewSet(viewsets.ModelViewSet):
             less_closest_drivers= self.calcule_dist_driver(request, instance_less_closest_drivers)
 
         # Se validan las instancias ya que cuando la coincidencia es 0.0 no lo reconoce
+
         if isinstance(greater_closest_drivers, float) and isinstance(less_closest_drivers, float):
             # El registro que sus coordenadas esten mas cerca es el que se retorna al usuario
             if greater_closest_drivers < less_closest_drivers:            
                 serializer = self.get_serializer(instance_greater_closest_drivers)
+                return Response(serializer.data)
             else:
                 serializer = self.get_serializer(instance_less_closest_drivers)
+                return Response(serializer.data)
         elif isinstance(greater_closest_drivers, float):
             serializer = self.get_serializer(instance_greater_closest_drivers)
+            return Response(serializer.data)
         elif isinstance(less_closest_drivers, float):
             serializer = self.get_serializer(instance_less_closest_drivers)
+            return Response(serializer.data)
         else:
             return Response({"message": "No se encuentran conductores disponibles en la fecha ingresada"}, status=status.HTTP_404_NOT_FOUND)
         
-        return Response(serializer.data)
+        

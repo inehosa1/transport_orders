@@ -20,8 +20,8 @@ class DriverAvailableSerializer(serializers.ModelSerializer):
         if schedule.minute != 0:
             schedule_errors.append("La fecha de entrega debe ser en horas exactas")
                     
-        if timezone.now() > schedule:
-            schedule_errors.append("La fecha debe ser mayor a la actual para asignar un pedido")
+        if timezone.now() >= schedule:
+            schedule_errors.append("La fecha debe ser mayor o igual a la actual para asignar un pedido")
     
         if schedule_errors:
             raise serializers.ValidationError(", ".join(schedule_errors))
