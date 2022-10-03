@@ -206,8 +206,8 @@ class AccountTests(APITestCase):
         
         response = self.client.get(url, search, format='json')
         
-        # En algunos casos saca 404 por que no encuentra ningun conductor disponible en ese rango
-        if response.status_code == 404:            
+        # En algunos casos saca 404 por que no encuentra ningun conductor disponible en ese rango este es un error a solucionar ya que la consulta no esta tomando el registro que deberia estar disponible
+        if response.status_code == status.HTTP_404_NOT_FOUND:            
             self.assertEqual(response.data["message"], "No se encuentran conductores disponibles en la fecha ingresada")            
         else:
             self.assertEqual(response.status_code, status.HTTP_200_OK)

@@ -60,6 +60,13 @@ class OrderViewSet(viewsets.ModelViewSet):
             (instance.driver_available.delivery_latitude,instance.driver_available.delivery_longitude)
         )
 
+    @swagger_auto_schema(operation_description="Api para la creación de pedidos ejemplo formato de fecha: 2022-10-03 01:00")
+    def create(self, request, *args, **kwargs):
+        """
+        Creación de pedidos
+        """
+        return super().create(request, *args, **kwargs)
+
     @swagger_auto_schema(operation_description="Busqueda del conductor mas cercano acorde a las cordenadas ingresadas")
     @action(detail=False, methods=["get"], filterset_class = FindNearestDriverFilter, url_name="find_nearest_driver")
     def find_nearest_driver(self, request):
