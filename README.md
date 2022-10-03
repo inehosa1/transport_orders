@@ -9,8 +9,10 @@
 
 **Instrucciónes para su ejecución**
 * Crear entorno virtual python
-* Instalar el archivo requeriments.txt 
-* Activar el entorno y correr el servicio de django
+* Activar el entorno virtual
+* pip install -r requeriments.txt 
+* python manage.py migrate para crear la base de datos sqlite
+* python manage.py runsever
 * En la ruta inicial se encontrara la documentación en swagger
 
 **Funcionalidades:**
